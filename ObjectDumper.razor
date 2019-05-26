@@ -1,0 +1,45 @@
+@using Microsoft.AspNetCore.Components
+@using Newtonsoft.Json
+
+  <div>
+    <button onclick="@DumpVMToConsole">@ButtonText</button>
+    <pre id="json">@_objectAsJson</pre>
+  </div>
+
+
+@functions {
+
+  // This component allows the easy visualisation of the values currently held in 
+  // an object and its child objects.  Add this component to a page and pass in a 
+  // param for the object to monitor, then press the button to see the object's data
+  // as nicely formatted JSON
+  // Use like this:  <ObjectDumper ObjectToDump="@_billOfLadingVM" />
+
+  [Parameter]
+  private object ObjectToDump { get; set; }
+
+  [Parameter]
+  private string ButtonText { get; set; } = "Show object's data";
+
+  string _buttonText;
+
+  string _objectAsJson = "";
+
+  public void DumpVMToConsole()
+  {
+    _objectAsJson = GetObjectAsFormattedJson(ObjectToDump);
+    Console.WriteLine(_objectAsJson);
+  }
+
+  public string GetObjectAsFormattedJson(object obj)
+  {
+    return JsonConvert.SerializeObject(
+      value: obj, 
+      formatting: Formatting.Indented, 
+      settings: new JsonSerializerSettings
+      {
+        PreserveReferencesHandling = PreserveReferencesHandling.Objects
+      });
+  }
+
+}
